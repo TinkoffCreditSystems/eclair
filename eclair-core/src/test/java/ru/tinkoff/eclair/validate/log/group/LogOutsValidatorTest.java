@@ -18,9 +18,12 @@ package ru.tinkoff.eclair.validate.log.group;
 import org.junit.Before;
 import org.junit.Test;
 import ru.tinkoff.eclair.annotation.Log;
-import ru.tinkoff.eclair.validate.log.single.LogValidator;
+import ru.tinkoff.eclair.printer.resolver.AliasedPrinterResolver;
+import ru.tinkoff.eclair.validate.AnnotationUsageException;
+import ru.tinkoff.eclair.validate.log.single.LogOutValidator;
 
 import java.lang.reflect.Method;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -48,14 +51,27 @@ public class LogOutsValidatorTest {
     public void isTransitive() {
         // given
         Map<String, Set<String>> loggerNames = singletonMap("logger", new HashSet<>(asList("logger", "")));
-        @SuppressWarnings("unchecked")
-        LogValidator<Log.out> logValidator = (LogValidator<Log.out>) mock(LogValidator.class);
-        LogOutsValidator logOutsValidator = new LogOutsValidator(loggerNames, logValidator);
+        LogOutValidator logOutValidator =   mock(LogOutValidator.class);
+        LogOutsValidator logOutsValidator = new LogOutsValidator(loggerNames, logOutValidator);
         Log.out logOut = synthesizeAnnotation(Log.out.class);
         Set<Log.out> annotations = singleton(logOut);
         // when
         logOutsValidator.validate(method, annotations);
         // then
-        verify(logValidator).validate(method, logOut);
+        verify(logOutValidator).validate(method, logOut);
+    }
+
+    @Test(expected = AnnotationUsageException.class)
+    public void validateVoidMethodLogging() {
+        // given
+        Map<String, Set<String>> loggerNames = singletonMap("logger", new HashSet<>(asList("logger", "")));
+        LogOutValidator logOutValidator =   new LogOutValidator(new AliasedPrinterResolver(Collections.emptyMap(), Collections.emptyMap()));
+        LogOutsValidator logOutsValidator = new LogOutsValidator(loggerNames, logOutValidator);
+        Map<String, Object> printer = singletonMap("printer", "jacksonPrinter");
+        Log.out logOut = synthesizeAnnotation(printer, Log.out.class, null);
+        Set<Log.out> annotation = singleton(logOut);
+        // when
+        logOutsValidator.validate(method, annotation);
+        // then expected exception
     }
 }

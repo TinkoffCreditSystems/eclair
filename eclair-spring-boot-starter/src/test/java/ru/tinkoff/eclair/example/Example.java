@@ -297,26 +297,13 @@ class Example {
      * Equals to next
      */
     @Log.in(ERROR)
-    @Log(TRACE)
+    @Log.out(TRACE)
     void inLog() {
     }
 
     @Log.in(ERROR)
     @Log.out(TRACE)
     void inOut() {
-    }
-
-    /**
-     * Equals to next
-     */
-    @Log.out(ERROR)
-    @Log(TRACE)
-    void outLog() {
-    }
-
-    @Log.out(ERROR)
-    @Log.in(TRACE)
-    void outIn() {
     }
 
     // TODO: add example for {@link LogError} ordering (in order of appearance)
@@ -346,7 +333,6 @@ class Example {
      * As if there is no '@Log.in' above method:
      * DEBUG [] ru.tinkoff.eclair.example.Example.offLevelWithArg > a=1
      */
-    @Log.in(OFF)
     void offLevelWithArg(@Log int a) {
     }
 

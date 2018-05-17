@@ -31,8 +31,6 @@ import static java.util.Objects.isNull;
 import static org.springframework.boot.logging.LogLevel.OFF;
 
 /**
- * TODO: verbose, printer for empty parameter array (or (v|V)oid return type)
- * TODO: explicit 'OFF' level
  *
  * @author Vyacheslav Klapatnyuk
  */

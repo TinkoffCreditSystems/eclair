@@ -29,6 +29,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toSet;
 
@@ -44,6 +45,7 @@ public class MethodValidator implements AnnotationUsageValidator<Method> {
     private final LogOutsValidator logOutsValidator;
     private final LogErrorsValidator logErrorsValidator;
     private final ParameterLogsValidator parameterLogsValidator;
+    private final MethodLogsValidator methodLogsValidator;
 
     private final MethodMdcsValidator methodMdcsValidator;
     private final MdcsValidator mdcsValidator;
@@ -55,7 +57,7 @@ public class MethodValidator implements AnnotationUsageValidator<Method> {
                            LogOutsValidator logOutsValidator,
                            LogErrorsValidator logErrorsValidator,
                            ParameterLogsValidator parameterLogsValidator,
-                           MethodMdcsValidator methodMdcsValidator,
+                           MethodLogsValidator methodLogsValidator, MethodMdcsValidator methodMdcsValidator,
                            MdcsValidator mdcsValidator,
                            MergedMdcsValidator mergedMdcsValidator) {
         this.annotationExtractor = annotationExtractor;
@@ -64,6 +66,7 @@ public class MethodValidator implements AnnotationUsageValidator<Method> {
         this.logOutsValidator = logOutsValidator;
         this.logErrorsValidator = logErrorsValidator;
         this.parameterLogsValidator = parameterLogsValidator;
+        this.methodLogsValidator = methodLogsValidator;
         this.methodMdcsValidator = methodMdcsValidator;
         this.mdcsValidator = mdcsValidator;
         this.mergedMdcsValidator = mergedMdcsValidator;
@@ -73,12 +76,6 @@ public class MethodValidator implements AnnotationUsageValidator<Method> {
         validate(method, method);
     }
 
-    /**
-     * TODO: Log + Log.in           -> Log.in + Log.out ?-> Log
-     * TODO: Log + Log.out          -> Log.in + Log.out ?-> Log
-     * TODO: Log + Log.in + Log.out -> Log.in + Log.out ?-> Log
-     * TODO: Log.in + Log.out      ?-> Log
-     */
     @Override
     public void validate(Method method, Method target) throws AnnotationUsageException {
         Set<Log> logs = annotationExtractor.getLogs(target);
@@ -136,6 +133,9 @@ public class MethodValidator implements AnnotationUsageValidator<Method> {
         logOutsValidator.validate(target, logOuts);
         logErrorsValidator.validate(target, logErrors);
         parameterLogs.forEach(log -> parameterLogsValidator.validate(target, log));
+        methodLogsValidator.validate(target, Stream.of(logs, logOuts, logIns)
+                .flatMap(Collection::stream)
+                .collect(toSet()));
 
         methodMdcsValidator.validate(target, mdcs);
         parameterMdcs.forEach(item -> mdcsValidator.validate(target, item));

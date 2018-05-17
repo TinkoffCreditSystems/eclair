@@ -17,7 +17,7 @@ package ru.tinkoff.eclair.validate.log.group;
 
 import ru.tinkoff.eclair.annotation.Log;
 import ru.tinkoff.eclair.validate.AnnotationUsageException;
-import ru.tinkoff.eclair.validate.log.single.LogValidator;
+import ru.tinkoff.eclair.validate.log.single.LogOutValidator;
 
 import java.lang.reflect.Method;
 import java.util.Map;
@@ -28,10 +28,10 @@ import java.util.Set;
  */
 public class LogOutsValidator extends GroupLogValidator<Log.out> {
 
-    private final LogValidator<Log.out> logOutValidator;
+    private final LogOutValidator logOutValidator;
 
     public LogOutsValidator(Map<String, Set<String>> loggerNames,
-                            LogValidator<Log.out> logOutValidator) {
+                            LogOutValidator logOutValidator) {
         super(loggerNames);
         this.logOutValidator = logOutValidator;
     }

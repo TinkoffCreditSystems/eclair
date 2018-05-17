@@ -6,7 +6,7 @@
     <parent>
         <groupId>ru.tinkoff</groupId>
         <artifactId>eclair</artifactId>
-        <version>0.8.3</version>
+        <version>0.9.0</version>
     </parent>
 
     <artifactId>eclair-spring-boot-starter</artifactId>
@@ -29,7 +29,7 @@
         <dependency>
             <groupId>ru.tinkoff</groupId>
             <artifactId>eclair-core</artifactId>
-            <version>0.8.3</version>
+            <version>0.9.0</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
